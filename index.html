@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f4c81" />
+
+  <title>廣島🇯🇵5天4夜</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans TC",
+        "Microsoft JhengHei",
+        sans-serif;
+      background: #f3f5f7;
+      color: #243040;
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .hero {
+      padding: 44px 20px 34px;
+      color: white;
+      text-align: center;
+      background:
+        linear-gradient(
+          rgba(8, 47, 83, 0.72),
+          rgba(8, 47, 83, 0.85)
+        ),
+        url("https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1600&q=80")
+        center / cover;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(30px, 7vw, 52px);
+    }
+
+    .hero p {
+      margin: 4px 0;
+      opacity: 0.95;
+    }
+
+    .day-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      overflow-x: auto;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid #dce2e8;
+      backdrop-filter: blur(10px);
+    }
+
+    .day-nav a {
+      flex: 0 0 auto;
+      padding: 9px 15px;
+      color: white;
+      font-weight: 700;
+      border-radius: 999px;
+      background: #0f4c81;
+    }
+
+    main {
+      width: min(920px, calc(100% - 28px));
+      margin: 28px auto 70px;
+    }
+
+    section {
+      scroll-margin-top: 85px;
+    }
+
+    .day-header {
+      margin-bottom: 20px;
+      padding: 22px;
+      color: white;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #0f4c81, #1976a3);
+      box-shadow: 0 10px 25px rgba(20, 50, 80, 0.12);
+    }
+
+    .day-header h2 {
+      margin: 0 0 4px;
+    }
+
+    .timeline {
+      position: relative;
+      margin-left: 18px;
+      padding-left: 28px;
+      border-left: 3px solid #bfd4e7;
+    }
+
+    .event {
+      position: relative;
+      margin-bottom: 24px;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 7px 22px rgba(29, 48, 66, 0.08);
+    }
+
+    .event::before {
+      position: absolute;
+      top: 24px;
+      left: -39px;
+      width: 16px;
+      height: 16px;
+      content: "";
+      border: 4px solid #f3f5f7;
+      border-radius: 50%;
+      background: #0f4c81;
+    }
+
+    .time {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 4px 11px;
+      color: #0f4c81;
+      font-size: 14px;
+      font-weight: 800;
+      border-radius: 999px;
+      background: #e9f2f9;
+    }
+
+    .event h3 {
+      margin: 0 0 8px;
+      font-size: 21px;
+    }
+
+    .event p {
+      margin: 6px 0;
+    }
+
+    .tip {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-left: 4px solid #e39b19;
+      border-radius: 8px;
+      background: #fff8e7;
+    }
+
+    .map-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 12px;
+      padding: 10px 15px;
+      color: white;
+      font-weight: 700;
+      border-radius: 9px;
+      background: #247245;
+      transition: 0.2s;
+    }
+
+    .map-button:hover {
+      background: #185b34;
+      transform: translateY(-1px);
+    }
+
+    .restaurant-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .restaurant {
+      padding: 16px;
+      border: 1px solid #e2e7eb;
+      border-radius: 13px;
+      background: #fafbfc;
+    }
+
+    .restaurant h4 {
+      margin: 0 0 5px;
+      font-size: 17px;
+    }
+
+    .rating {
+      color: #a86400;
+      font-weight: 800;
+    }
+
+    .tag {
+      display: inline-block;
+      margin: 4px 4px 0 0;
+      padding: 3px 8px;
+      color: #4b5563;
+      font-size: 13px;
+      border-radius: 999px;
+      background: #edf0f2;
+    }
+
+    .warning {
+      color: #a51e22;
+      font-weight: 700;
+    }
+
+    .summary {
+      margin-top: 32px;
+      padding: 20px;
+      border-radius: 16px;
+      background: #eaf4ec;
+    }
+
+    .placeholder {
+      padding: 20px;
+      border-radius: 16px;
+      background: white;
+      box-shadow: 0 7px 22px rgba(29, 48, 66, 0.08);
+    }
+
+    footer {
+      padding: 25px;
+      color: #68727d;
+      text-align: center;
+    }
+
+    @media (max-width: 650px) {
+      .restaurant-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline {
+        margin-left: 8px;
+        padding-left: 22px;
+      }
+
+      .event::before {
+        left: -33px;
+      }
+
+      .event {
+        padding: 17px;
+      }
+    }
+    .view-switch {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 24px 0 14px;
+}
+
+.view-button {
+  padding: 14px 12px;
+  border: 1px solid #dce2e8;
+  border-radius: 12px;
+  background: white;
+  color: #243040;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.view-button.active {
+  background: #0f4c81;
+  color: white;
+  border-color: #0f4c81;
+}
+
+.day-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.day-button {
+  flex: 1;
+  min-width: 70px;
+  padding: 10px 12px;
+  border: 1px solid #dce2e8;
+  border-radius: 999px;
+  background: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.day-button.active {
+  background: #0f4c81;
+  color: white;
+}
+
+#trip-map {
+  width: 100%;
+  height: 620px;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.map-view,
+.itinerary-view {
+  display: none;
+}
+
+.map-view.active,
+.itinerary-view.active {
+  display: block;
+}
+
+.day-section {
+  display: none;
+}
+
+.day-section.active {
+  display: block;
+}
+
+.map-popup-title {
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 650px) {
+  #trip-map {
+    height: 480px;
+  }
+}
+  </style>
+</head>
+
+<body>
+<header class="hero">
+    <h1>廣島🇯🇵5天4夜</h1>
+    <p>2027/2/2－2/6 5大1小</p>
+  
+
+    <p style="margin-top:18px;font-size:14px;opacity:.85;">
+        📅 最後更新：2026/08/17 12:07
+    </p>
+</header>
+
+
+  <main>
+    <main>
+
+  <div class="view-switch">
+  <button
+    class="view-button active"
+    data-view="itinerary"
+    type="button"
+  >
+    📅 行程表
+  </button>
+
+  <button
+    class="view-button"
+    data-view="map"
+    type="button"
+  >
+    🗺️ 行程地圖
+  </button>
+</div>
+
+  <div class="day-switch">
+  <button class="day-button active" data-day="1" type="button">Day 1</button>
+  <button class="day-button" data-day="2" type="button">Day 2</button>
+  <button class="day-button" data-day="3" type="button">Day 3</button>
+  <button class="day-button" data-day="4" type="button">Day 4</button>
+  <button class="day-button" data-day="5" type="button">Day 5</button>
+</div>
+
+<div id="mapView" class="map-view">
+  <div id="trip-map" style="display: none;"></div>
+
+  <div class="map-placeholder">
+    <p>🗺️ 行程地圖待更新</p>
+  </div>
+</div>
+
+<div id="itineraryView" class="itinerary-view active">
+  <section id="day1" class="day-section active" data-day="1">
+      <div class="day-header">
+        <h2>2/2（二）Day 1</h2>
+    <div>抵達廣島、吳市半日包車與遊覽船</div>
+  </div>
+
+  <div class="timeline">
+    <article class="event">
+      <span class="time">07:10</span>
+      <h3>✈️ 桃園機場起飛</h3>
+      <p>由桃園國際機場出發，前往廣島。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">10:25</span>
+      <h3>🛬 抵達廣島機場</h3>
+      <p>完成入境手續並領取行李。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">上午</span>
+      <h3>🚐 搭乘包車前往吳市</h3>
+      <p>由廣島機場出發，開始吳市半日包車行程。</p>
+
+      <div class="tip">
+        包車接送時間與停留順序，將依實際抵達時間及預約情況調整。
+      </div>
+    </article>
+
+    <article class="event">
+      <span class="time">中午</span>
+      <h3>🍛 午餐｜海軍咖哩</h3>
+      <p>抵達吳市後，享用當地代表性的海軍咖哩。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">午後</span>
+      <h3>🍩 購買炸饅頭</h3>
+      <p>前往當地名店購買吳市特色炸饅頭，作為飯後點心。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">下午</span>
+      <h3>⚓ 海上自衛隊吳史料館</h3>
+      <p>
+        參觀海上自衛隊吳史料館，又稱「鐵鯨館」，
+        館外展示大型退役潛水艇。
+      </p>
+
+      <p>
+        館內可了解潛水艇生活、掃雷任務及吳市的海軍歷史。
+      </p>
+    </article>
+
+    <article class="event">
+      <span class="time">傍晚</span>
+      <h3>🚢 吳灣遊覽船</h3>
+      <p>
+        搭乘遊覽船欣賞吳港、海上自衛隊艦艇及港灣風景。
+      </p>
+
+      <div class="tip">
+        實際搭乘時間需配合當日船班，建議事先確認並預約。
+      </div>
+    </article>
+
+    <article class="event">
+      <span class="time">遊船後</span>
+      <h3>🚐 返回廣島市區</h3>
+      <p>遊覽船行程結束後，搭乘包車返回廣島市區。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">晚上</span>
+      <h3>🏨 廣島飯店 Check-in</h3>
+      <p>抵達飯店、辦理入住並稍作休息。</p>
+    </article>
+  </div>
+
+  <div class="summary">
+    <strong>Day 1 重點</strong>
+    <p>
+      抵達廣島後搭乘包車前往吳市，享用海軍咖哩、
+      購買特色炸饅頭、參觀海上自衛隊吳史料館，
+      傍晚搭乘吳灣遊覽船，結束後返回廣島飯店入住。
+    </p>
+  </div>
+</section>
+
+  <section id="day2" class="day-section" data-day="2">
+  <div class="day-header">
+    <h2>2/3（三）Day 2</h2>
+    <div>尾道市一日遊</div>
+  </div>
+
+  <div class="timeline">
+    <article class="event">
+      <span class="time">上午</span>
+      <h3>🚆 前往尾道市</h3>
+      <p>從廣島出發前往尾道，詳細交通方式與出發時間待確認。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">全天</span>
+      <h3>🐈 尾道市區散策</h3>
+      <p>
+        預計安排尾道市區觀光，詳細景點、餐廳及移動路線待確認。
+      </p>
+
+      <div class="tip">
+        📝 本日行程暫定，確認後再補上時間與景點。
+      </div>
+    </article>
+
+    <article class="event">
+      <span class="time">晚上</span>
+      <h3>🏨 返回廣島飯店</h3>
+      <p>結束尾道市行程後，返回廣島市區休息。</p>
+    </article>
+  </div>
+
+  <div class="summary">
+    <strong>Day 2 重點</strong>
+    <p>尾道市一日遊，詳細行程與交通方式待確認。</p>
+  </div>
+</section>
+
+<section id="day3" class="day-section" data-day="3">
+  <div class="day-header">
+    <h2>2/4（四）Day 3</h2>
+    <div>宮島與嚴島神社一日遊</div>
+  </div>
+
+  <div class="timeline">
+    <article class="event">
+      <span class="time">上午</span>
+      <h3>🚆 前往宮島</h3>
+      <p>從廣島市區出發，搭乘電車或火車前往宮島口。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">上午</span>
+      <h3>⛴️ 搭乘渡輪前往宮島</h3>
+      <p>從宮島口搭乘渡輪，前往宮島。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">中午前後</span>
+      <h3>⛩️ 參觀嚴島神社</h3>
+      <p>
+        參觀世界文化遺產嚴島神社，欣賞矗立於海上的朱紅色大鳥居。
+      </p>
+    </article>
+
+    <article class="event">
+      <span class="time">下午</span>
+      <h3>🦌 宮島散策</h3>
+      <p>預計安排宮島商店街、在地美食與周邊景點，詳細內容待確認。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">傍晚</span>
+      <h3>🏨 返回廣島市區</h3>
+      <p>搭乘渡輪返回宮島口，再返回廣島飯店。</p>
+    </article>
+  </div>
+
+  <div class="summary">
+    <strong>Day 3 重點</strong>
+    <p>前往宮島參觀嚴島神社與海上大鳥居，並安排宮島散策。</p>
+  </div>
+</section>
+
+<section id="day4" class="day-section" data-day="4">
+  <div class="day-header">
+    <h2>2/5（五）Day 4</h2>
+    <div>廣島市區觀光</div>
+  </div>
+
+  <div class="timeline">
+    <article class="event">
+      <span class="time">上午</span>
+      <h3>🏙️ 廣島市區行程</h3>
+      <p>預計遊覽廣島市區，詳細景點及時間待確認。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">下午</span>
+      <h3>🚶 市區散策</h3>
+      <p>可依體力與天氣安排景點、購物或自由活動。</p>
+
+      <div class="tip">
+        📝 本日行程暫定，確認後再補上景點、餐廳及交通資訊。
+      </div>
+    </article>
+
+    <article class="event">
+      <span class="time">晚上</span>
+      <h3>🧳 返回飯店＆整理行李</h3>
+      <p>返回飯店休息，整理行李並準備隔日返程。</p>
+    </article>
+  </div>
+
+  <div class="summary">
+    <strong>Day 4 重點</strong>
+    <p>廣島市區觀光與自由活動，詳細行程待確認。</p>
+  </div>
+</section>
+
+<section id="day5" class="day-section" data-day="5">
+  <div class="day-header">
+    <h2>2/6（六）Day 5</h2>
+    <div>前往廣島機場，返回台灣</div>
+  </div>
+
+  <div class="timeline">
+    <article class="event">
+      <span class="time">上午</span>
+      <h3>🧳 飯店 Check-out</h3>
+      <p>辦理退房後，前往廣島機場。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">11:25</span>
+      <h3>✈️ 廣島機場起飛</h3>
+      <p>搭乘返程班機，由廣島返回台灣。</p>
+    </article>
+
+    <article class="event">
+      <span class="time">13:25</span>
+      <h3>🛬 抵達台灣</h3>
+      <p>抵達桃園國際機場，結束五天廣島之旅。</p>
+    </article>
+  </div>
+
+  <div class="summary">
+    <strong>Day 5 重點</strong>
+    <p>飯店退房後前往廣島機場，11:25 起飛，13:25 抵達台灣。</p>
+  </div>
+</section>
+  </main>
+
+  <footer>
+    日本廣島 2027 Family Trip
+  </footer>
+    
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const viewButtons = document.querySelectorAll("[data-view]");
+    const itineraryView = document.getElementById("itineraryView");
+    const mapView = document.getElementById("mapView");
+
+    viewButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        const selectedView = button.dataset.view;
+
+        viewButtons.forEach(function (item) {
+          item.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        if (selectedView === "itinerary") {
+          itineraryView.classList.add("active");
+          mapView.classList.remove("active");
+        }
+
+        if (selectedView === "map") {
+          mapView.classList.add("active");
+          itineraryView.classList.remove("active");
+        }
+      });
+    });
+
+    const dayButtons = document.querySelectorAll(".day-button");
+    const daySections = document.querySelectorAll(".day-section");
+    const mapDayTitle = document.getElementById("mapDayTitle");
+
+    dayButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        const selectedDay = button.dataset.day;
+
+        dayButtons.forEach(function (item) {
+          item.classList.remove("active");
+        });
+
+        daySections.forEach(function (section) {
+          section.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        const selectedSection = document.querySelector(
+          '.day-section[data-day="' + selectedDay + '"]'
+        );
+
+        if (selectedSection) {
+          selectedSection.classList.add("active");
+        }
+
+        if (mapDayTitle) {
+          mapDayTitle.textContent = "Day " + selectedDay;
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
