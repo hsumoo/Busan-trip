@@ -343,6 +343,203 @@
     height: 480px;
   }
 }
+/* =========================
+   Christmas Theme
+========================= */
+
+body {
+  color: #26332d;
+  background:
+    radial-gradient(circle at top left, rgba(201, 162, 39, 0.08), transparent 30%),
+    #f8f5ed;
+}
+
+/* 頂部主視覺 */
+.hero {
+  background:
+    linear-gradient(
+      rgba(89, 12, 24, 0.72),
+      rgba(20, 75, 55, 0.88)
+    ),
+    url("https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&w=1600&q=80")
+    center / cover;
+  border-bottom: 4px solid #d4af37;
+}
+
+.hero h1 {
+  color: #ffffff;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+}
+
+.hero p {
+  color: #fff8e8;
+}
+
+/* 原本上方日期導覽 */
+.day-nav {
+  background: rgba(255, 253, 247, 0.96);
+  border-bottom: 1px solid #dccba5;
+}
+
+.day-nav a {
+  color: #ffffff;
+  background: #176044;
+}
+
+.day-nav a:hover {
+  background: #a51e2d;
+}
+
+/* 行程／地圖切換按鈕 */
+.view-button {
+  color: #26332d;
+  border-color: #d8c8a5;
+  background: #fffdf7;
+}
+
+.view-button:hover {
+  color: #8e1828;
+  border-color: #8e1828;
+}
+
+.view-button.active {
+  color: #ffffff;
+  border-color: #a51e2d;
+  background: #a51e2d;
+  box-shadow: 0 5px 14px rgba(165, 30, 45, 0.22);
+}
+
+/* Day 1～Day 4 按鈕 */
+.day-button {
+  color: #20533e;
+  border-color: #c9b98f;
+  background: #fffdf7;
+}
+
+.day-button:hover {
+  color: #ffffff;
+  border-color: #176044;
+  background: #176044;
+}
+
+.day-button.active {
+  color: #ffffff;
+  border-color: #a51e2d;
+  background: #a51e2d;
+}
+
+/* 每日標題 */
+.day-header {
+  color: #ffffff;
+  background: linear-gradient(135deg, #176044, #0d402d);
+  border: 1px solid rgba(212, 175, 55, 0.65);
+  box-shadow: 0 10px 25px rgba(20, 66, 48, 0.18);
+}
+
+.day-header h2::before {
+  margin-right: 7px;
+  content: "🎄";
+}
+
+/* 時間軸 */
+.timeline {
+  border-left-color: #c9a83e;
+}
+
+.event {
+  background: #fffdf8;
+  border: 1px solid #eee4ce;
+  box-shadow: 0 7px 22px rgba(57, 42, 29, 0.08);
+}
+
+.event::before {
+  border-color: #f8f5ed;
+  background: #a51e2d;
+  box-shadow: 0 0 0 2px #d4af37;
+}
+
+/* 時間標籤 */
+.time {
+  color: #8c1726;
+  background: #f8e8e8;
+  border: 1px solid #edcccc;
+}
+
+/* 地圖按鈕 */
+.map-button {
+  color: #ffffff;
+  background: #176044;
+  border: 1px solid #d4af37;
+  box-shadow: 0 4px 10px rgba(23, 96, 68, 0.16);
+}
+
+.map-button:hover {
+  color: #ffffff;
+  background: #a51e2d;
+  transform: translateY(-1px);
+}
+
+/* 餐廳選項 */
+.restaurant {
+  border-color: #dfd0ae;
+  background: #fffaf0;
+}
+
+.restaurant h4 {
+  color: #176044;
+}
+
+.rating {
+  color: #a46e00;
+}
+
+.tag {
+  color: #7d1a28;
+  background: #f7e4e6;
+  border: 1px solid #ebc9cd;
+}
+
+/* 提醒區塊 */
+.tip {
+  color: #604710;
+  border-left-color: #d4af37;
+  background: #fff6d9;
+}
+
+/* 每日重點 */
+.summary {
+  color: #234b39;
+  background: #e7f1e9;
+  border: 1px solid #bdd1c2;
+}
+
+.summary strong {
+  color: #8e1828;
+}
+
+/* 待決定區塊 */
+.placeholder {
+  background: #fffdf8;
+  border: 1px solid #eee4ce;
+}
+
+/* 地圖外框 */
+#trip-map {
+  border: 3px solid #176044;
+  box-shadow: 0 8px 24px rgba(23, 96, 68, 0.15);
+}
+
+/* 地圖標題 */
+.map-popup-title {
+  color: #8e1828;
+}
+
+/* 頁尾 */
+footer {
+  color: #52645a;
+  border-top: 1px solid #dfd2b5;
+  background: #f1ede3;
+}
   </style>
 </head>
 
