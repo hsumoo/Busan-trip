@@ -238,10 +238,41 @@
     }
 
     footer {
-      padding: 25px;
-      color: #68727d;
-      text-align: center;
-    }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 25px 15px;
+  color: #7f5547;
+  text-align: center;
+  flex-wrap: nowrap;
+}
+
+.footer-divider {
+  color: #d9ad52;
+}
+
+.footer-link {
+  color: #8e1725;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.footer-link:hover {
+  color: #a51f2d;
+  text-decoration: underline;
+}
+
+footer span:first-child {
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  footer {
+    gap: 6px;
+    font-size: 13px;
+  }
+}
 
     @media (max-width: 650px) {
       .restaurant-grid {
@@ -1114,8 +1145,11 @@ footer {
 
   </main>
 
- <footer>
-  <p>2026 韓國釜山</p>
+<footer>
+  <span>2026 韓國釜山</span>
+
+  <span class="footer-divider">｜</span>
+
   <a
     class="footer-link"
     href="https://hsumoo.github.io/Momo-s-travel/"
